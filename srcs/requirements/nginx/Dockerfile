@@ -1,10 +1,16 @@
-FROM debian:11.9
+FROM debian:bookworm
 
-RUN apt-get update && apt-get install -y nginx openssl && apt-get clean
+# Install required packages
+RUN apt-get update && apt-get install -y nginx openssl && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN rm /etc/nginx/sites-enabled/default
+# Copy NGINX configuration and SSL certificates
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/nginx.crt /etc/nginx/nginx.crt
+COPY ./conf/nginx.key /etc/nginx/nginx.key
 
-COPY ./html /var/www/html
+# Expose HTTPS port
+EXPOSE 443
 
-COPY ./ssl /etc/nginx/ssl
-
+# Start NGINX in the foreground
+CMD ["nginx", "-g", "daemon off;"]
