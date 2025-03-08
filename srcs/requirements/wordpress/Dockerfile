@@ -18,5 +18,4 @@ RUN chmod +x /setup_wordpress.sh && /setup_wordpress.sh
 # Expose PHP-FPM port
 EXPOSE 9000
 
-# CMD ["php-fpm", "-F"]
-CMD [ "yes" ]
+CMD ["php-fpm8.2", "-F"]

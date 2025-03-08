@@ -40,3 +40,4 @@ echo "MariaDB setup completed!"
 
 # Keep MariaDB running in the foreground
 # wait
+mysqld_safe
