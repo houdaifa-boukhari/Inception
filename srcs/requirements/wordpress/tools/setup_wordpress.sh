@@ -11,6 +11,9 @@ rmdir wordpress
 # Set correct permissions
 chown -R www-data:www-data /var/www/html
 
+export MYSQL_DATABASE="MyDataBase"
+export MYSQL_USER="hel-bouk"
+export MYSQL_PASSWORD="123458796"
 # Create wp-config.php
 cat <<EOF > /var/www/html/wp-config.php
 <?php

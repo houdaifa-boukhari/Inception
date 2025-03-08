@@ -2,7 +2,7 @@ FROM debian:bookworm
 
 EXPOSE 3306
 
-RUN apt update && apt upgrade -y && apt install mariadb-server mariadb-client -y && sudo apt clean
+RUN apt-get update && apt-get upgrade -y && apt-get install -y mariadb-server mariadb-client && apt-get clean
 
 COPY install.sh /usr/local/bin
 

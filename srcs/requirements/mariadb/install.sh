@@ -1,43 +1,42 @@
 #!/bin/bash
 
-# Update package list
-echo "Updating package list..."
-sudo apt update -y
+# Load environment variables
+# source /usr/local/bin/.env
 
-# Install MariaDB server
-echo "Installing MariaDB server..."
-sudo apt install -y mariadb-server
+MYSQL_ROOT_PASSWORD=secure_root_password
+DB_NAME=mydatabase
+DB_USER=hel-bouk
+DB_PASS=zel-bouk@013251
 
-# Enable and start MariaDB service
-echo "Enabling and starting MariaDB service..."
-sudo systemctl enable mariadb
-sudo systemctl start mariadb
+# Check if MariaDB is already running
+if pgrep -x "mysqld" > /dev/null; then
+    echo "MariaDB is already running."
+else
+    echo "Starting MariaDB service..."
+    mysqld_safe --datadir=/var/lib/mysql &
+    sleep 5  # Wait for MariaDB to initialize
+fi
 
-# Secure MariaDB installation (Automated)
+# Secure MariaDB installation
 echo "Securing MariaDB installation..."
-sudo mysql_secure_installation <<EOF
-
-y
-zel-bouk@013251
-zel-bouk@013251
-y
-y
-y
-y
-y
-EOF
-
-# Create a database and a user
-DB_NAME="mydatabase"
-DB_USER="hel-bouk"
-DB_PASS="zel-bouk@013251"
-
-echo "Creating database and user..."
-sudo mysql -uroot -p'rootpassword' <<EOF
-CREATE DATABASE $DB_NAME;
-CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
-GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost';
+mysql -u root <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
+DELETE FROM mysql.user WHERE User='';
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 FLUSH PRIVILEGES;
 EOF
 
-echo "MariaDB installation and configuration completed!"
+# Create database and user
+echo "Creating database and user..."
+mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
+CREATE DATABASE IF NOT EXISTS ${DB_NAME};
+CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
+GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
+FLUSH PRIVILEGES;
+EOF
+
+echo "MariaDB setup completed!"
+
+# Keep MariaDB running in the foreground
+# wait
