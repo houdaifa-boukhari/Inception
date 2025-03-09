@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nginx:
-    build: ./requirements/nginx
+    build: ./srcs/requirements/nginx
     ports:
       - "443:443"
     networks:
@@ -13,8 +13,9 @@ services:
     volumes:
       - wordpress_data:/var/www/html
 
+
   wordpress:
-    build: ./requirements/wordpress
+    build: ./srcs/requirements/wordpress
     depends_on:
       - mariadb
     restart: always
@@ -29,7 +30,7 @@ services:
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
 
   mariadb:
-    build: ./requirements/mariadb
+    build: ./srcs/requirements/mariadb
     restart: always
     networks:
       - inception
@@ -47,6 +48,12 @@ networks:
 
 volumes:
   db_data:
-    driver: local
+    driver_opts:
+      o: bind
+      device: /home/hel-bouk/data/database
+      type: none
   wordpress_data:
-    driver: local
+    driver_opts:
+      o: bind
+      device: /home/hel-bouk/data/wordpress
+      type: none

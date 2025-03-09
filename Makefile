@@ -4,6 +4,7 @@ build:
 	docker-compose build
 
 up:
+	bash ./srcs/volumes.sh
 	docker-compose up -d
 
 down:
@@ -11,5 +12,8 @@ down:
 
 clean:
 	docker system prune -af
+
+fclean: down
+	docker-compose down --rmi local
 
 re: clean all
