@@ -1,34 +1,47 @@
 #!/bin/bash
 
-# Download and extract WordPress
-cd /var/www/html
-wget https://wordpress.org/latest.tar.gz
-tar -xzf latest.tar.gz
-rm latest.tar.gz
-mv wordpress/* .
-rmdir wordpress
+sleep 10
 
-# Set correct permissions
+echo "SH::Setting up WordPress..."
+if [ ! -f "/var/www/html/wp-config.php" ]; then
+#   # Create directory for WordPress if it doesn't exist
+  mkdir -p /var/www/html
+
+  # Download WordPress
+  echo "SH::Downloading WordPress..."
+  wp core download --path="/var/www/html" --allow-root
+
+
+  # Create wp-config.php with database credentials
+  wp config create \
+     --dbname="${MYSQL_DATABASE}" \
+     --dbuser="${MYSQL_USER}" \
+     --dbpass="${MYSQL_PASSWORD}" \
+     --dbhost="mariadb" \
+     --path="/var/www/html" \
+     --allow-root
+
+  # Install WordPress with the given admin credentials and site details
+  echo "SH::Installing WordPress..."
+  wp core install \
+     --url="hel-bouk.42.fr" \
+     --title="My site" \
+     --admin_user="admin" \
+     --admin_password="admin" \
+     --admin_email="admin@gmail.com" \
+     --path="/var/www/html" \
+     --allow-root
+
+   # Create user
+#    wp user create "${WP_USER}" "${WP_USER_EMAIL}" \
+#       --role="subscriber" \
+#       --user_pass="${WP_USER_PASSWORD}" \
+#       --path="/var/www/html" \
+#       --allow-root
+
+
+fi
+
 chown -R www-data:www-data /var/www/html
 
-# Create wp-config.php
-cat <<EOF > /var/www/html/wp-config.php
-<?php
-define( 'DB_NAME', getenv('MYSQL_DATABASE') );
-define( 'DB_USER', getenv('MYSQL_USER') );
-define( 'DB_PASSWORD', getenv('MYSQL_PASSWORD') );
-define( 'DB_HOST', 'mariadb' );
-define( 'DB_CHARSET', 'utf8' );
-define( 'DB_COLLATE', '' );
-
-\$table_prefix = 'wp_';
-
-define( 'WP_DEBUG', false );
-
-if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', __DIR__ . '/' );
-}
-require_once ABSPATH . 'wp-settings.php';
-EOF
-
-echo "WordPress installed successfully!"
+exec php-fpm8.2 -F
