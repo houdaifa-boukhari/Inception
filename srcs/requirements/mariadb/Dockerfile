@@ -1,12 +1,19 @@
 FROM debian:bookworm
 
+RUN apt-get update && apt-get upgrade -y 
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y net-tools mariadb-server mariadb-client && apt-get clean
+RUN apt-get install mariadb-server mariadb-client -y \
+    && apt-get clean
 
-COPY install.sh /usr/local/bin
+RUN sed -i "s/^bind-address\s*=.*$/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf
 
-RUN chmod +x /usr/local/bin/install.sh
+WORKDIR /script
+
+COPY ./script.sh /script/script.sh
+
+RUN chmod +x script.sh
 
 EXPOSE 3306
 
-ENTRYPOINT [ "/usr/local/bin/install.sh" ]
+ENTRYPOINT [ "sh", "/script/script.sh" ]
+
