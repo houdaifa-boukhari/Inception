@@ -1,6 +1,7 @@
 all: build up
 
 build:
+	bash ./srcs/volumes.sh
 	docker-compose build
 
 up:
@@ -9,7 +10,6 @@ up:
 
 down:
 	docker-compose down
-
 clean:
 	docker system prune -af
 
