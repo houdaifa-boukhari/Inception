@@ -17,21 +17,26 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
      --dbname="${MYSQL_DATABASE}" \
      --dbuser="${MYSQL_USER}" \
      --dbpass="${MYSQL_PASSWORD}" \
-     --dbhost="mariadb" \
+     --dbhost="${MYSQL_Host}" \
      --path="/var/www/html" \
      --allow-root
 
   # Install WordPress with the given admin credentials and site details
   echo "SH::Installing WordPress..."
   wp core install \
-     --url="https://hel-bouk.42.fr" \
-     --title="My site" \
-     --admin_user="admin" \
-     --admin_password="admin" \
-     --admin_email="admin@gmail.com" \
+     --url="${WP_URL}" \
+     --title="${WP_TITLE}" \
+     --admin_user="${WP_ADMIN}" \
+     --admin_password="${WP_ADMIN_PASS}" \
+     --admin_email="${WP_ADMIN_MAIL}" \
      --path="/var/www/html" \
      --allow-root
-
+   echo "SH::Creating additional WordPress user..."
+    wp user create "${WP_USER}" "${WP_MAIL_USER}" \
+        --role=editor \
+        --user_pass="${WP_PASS}" \
+        --path="/var/www/html" \
+        --allow-root
 fi
 echo "Setup wordpress done...."
 chown -R www-data:www-data /var/www/html
