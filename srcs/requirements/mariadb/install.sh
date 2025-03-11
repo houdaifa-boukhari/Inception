@@ -1,38 +1,27 @@
 #!/bin/bash
 
 echo "Starting MariaDB service..."
-mysqld_safe --datadir=/var/lib/mysql &
 
-# Wait for MariaDB to be ready
-echo "Waiting for MariaDB to be ready..."
-until mysqladmin ping -h localhost --silent; do
-    sleep 2
-done
+set -e
+if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
+    mysqld_safe &
+    
+    until mysqladmin ping --silent; do
+        sleep 2
+    done
 
-echo "Updating MariaDB configuration..."
-sed -i "s/^bind-address\s*=.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf
-
-echo "Securing MariaDB installation..."
-mysql -u root <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'secure_root_password';
-DELETE FROM mysql.user WHERE User='';
+    mysql -u root <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 DROP DATABASE IF EXISTS test;
-DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
+CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
+DELETE FROM mysql.user WHERE User='';
 FLUSH PRIVILEGES;
 EOF
 
-echo "Creating database and user..."
-mysql -u root -p'secure_root_password' <<EOF
-CREATE DATABASE IF NOT EXISTS mydatabase;
-CREATE USER IF NOT EXISTS 'hel-bouk'@'%' IDENTIFIED BY 'zel-bouk@013251';
-GRANT ALL PRIVILEGES ON mydatabase.* TO 'hel-bouk'@'%';
-FLUSH PRIVILEGES;
-EOF
+    mysqladmin -u root -p"$MYSQL_ROOT_PASSWORD" shutdown
+fi
 
-echo "MariaDB setup completed!"
-
-# Stop MariaDB background service before restarting in foreground
-mysqladmin -u root -p'secure_root_password' shutdown
-
-# Start MariaDB in the foreground
-exec mysqld_safe --datadir=/var/lib/mysql
+exec mysqld_safe

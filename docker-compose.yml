@@ -4,6 +4,7 @@ services:
   nginx:
     build: ./srcs/requirements/nginx
     image: nginx:new 
+    container_name: MyNginx
     ports:
       - "443:443"
     networks:
@@ -14,10 +15,10 @@ services:
     volumes:
       - wordpress_data:/var/www/html
 
-
   wordpress:
     build: ./srcs/requirements/wordpress
     image: wordpress:new
+    container_name: MyWordpress
     depends_on:
       - mariadb
     restart: always
@@ -31,13 +32,14 @@ services:
   mariadb:
     build: ./srcs/requirements/mariadb
     image: mariadb:new
+    container_name: MyMariaDB
     restart: always
     networks:
       - inception
     volumes:
       - db_data:/var/lib/mysql
     env_file:
-      - .env 
+      - .env
 
 networks:
   inception:
@@ -47,10 +49,10 @@ volumes:
   db_data:
     driver_opts:
       o: bind
-      device: /home/hel-bouk/data/database
+      device: /home/${USER}/MyDatabase/MariaDB
       type: none
   wordpress_data:
     driver_opts:
       o: bind
-      device: /home/hel-bouk/data/wordpress
+      device: /home/${USER}/MyDatabase/Wordpress
       type: none

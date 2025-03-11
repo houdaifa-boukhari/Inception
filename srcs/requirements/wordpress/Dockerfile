@@ -15,7 +15,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 WORKDIR /app
 
-COPY ./tools/setup_wordpress.sh /app/setup.sh
+COPY ./tools/install.sh /app/setup.sh
 
 RUN chmod +x /app/setup.sh
 

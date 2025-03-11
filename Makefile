@@ -1,19 +1,19 @@
-all: build up
+all: Volumes build up
+
+Volumes:
+	bash ./srcs/volumes.sh
 
 build:
-	bash ./srcs/volumes.sh
 	docker-compose build
 
 up:
-	bash ./srcs/volumes.sh
 	docker-compose up -d
 
 down:
 	docker-compose down
+
 clean:
 	docker system prune -af
-
-fclean: down
-	docker-compose down --rmi local
+	sudo rm -rf ~/MyDatabase
 
 re: clean all
