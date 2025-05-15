@@ -29,6 +29,14 @@ services:
     env_file:
       - .env
 
+  redis:
+    build: ./srcs/requirements//bonus/redis
+    image: redis:new
+    container_name: MyRedis
+    restart: always
+    networks:
+      - inception
+
   mariadb:
     build: ./srcs/requirements/mariadb
     image: mariadb:new
@@ -40,6 +48,16 @@ services:
       - db_data:/var/lib/mysql
     env_file:
       - .env
+  
+  adminer:
+    build: ./srcs/requirements/bonus/adminer
+    image: adminer:new
+    container_name: MyAdminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - inception
 
 networks:
   inception:

@@ -16,4 +16,7 @@ clean:
 	docker system prune -af
 	sudo rm -rf ~/MyDatabase
 
+volumes_clean:
+	sudo rm -rf ~/MyDatabase
+
 re: clean all

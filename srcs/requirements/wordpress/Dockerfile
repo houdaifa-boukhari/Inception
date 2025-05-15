@@ -2,7 +2,7 @@ FROM debian:bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y php-fpm  php-mysqli curl wget
+RUN apt-get update && apt-get install -y php-fpm php-mysqli php-redis curl wget
 
 RUN  sed -i 's/listen = \/run\/php\/php8.2-fpm.sock/listen = 0.0.0.0:9000/' /etc/php/8.2/fpm/pool.d/www.conf
 
