@@ -17,6 +17,6 @@ clean:
 	sudo rm -rf ~/MyDatabase
 
 volumes_clean:
-	sudo rm -rf ~/MyDatabase
+	sudo rm -rf ~/MyDatabase ~/logs
 
 re: clean all

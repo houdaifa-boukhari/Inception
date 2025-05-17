@@ -13,7 +13,8 @@ services:
       - wordpress
     restart: always
     volumes:
-      - wordpress_data:/var/www/html
+      - /home/${USER}/MyDatabase/Wordpress:/var/www/html
+      - /home/${USER}/logs/nginx:/var/log/nginx
 
   wordpress:
     build: ./srcs/requirements/wordpress
@@ -25,12 +26,12 @@ services:
     networks:
       - inception
     volumes:
-      - wordpress_data:/var/www/html
+      - /home/${USER}/MyDatabase/Wordpress:/var/www/html
     env_file:
       - .env
 
   redis:
-    build: ./srcs/requirements//bonus/redis
+    build: ./srcs/requirements/bonus/redis
     image: redis:new
     container_name: MyRedis
     restart: always
@@ -45,7 +46,7 @@ services:
     networks:
       - inception
     volumes:
-      - db_data:/var/lib/mysql
+      - /home/${USER}/MyDatabase/MariaDB:/var/lib/mysql
     env_file:
       - .env
   
@@ -69,19 +70,34 @@ services:
       - "30000-30009:30000-30009"
     networks:
       - inception
+    volumes:
+      - /home/${USER}/logs/vsftpd/vsftpd.log:/var/log/vsftpd.log
+    
+  static-site:
+    build: ./srcs/requirements/bonus/StaticWebSite
+    image: static-site:new
+    container_name: static-site
+    restart: always
+    ports:
+      - "8081:80"
+    networks:
+      - inception
+
+  fail2ban:
+    build: ./srcs/requirements/bonus/fail2ban
+    image: fail2ban:new
+    container_name: MyFail2ban
+    restart: always
+    # ports:
+    #   - "2222:22"
+    network_mode: host
+    volumes:
+      - /home/${USER}/logs/fail2ban:/var/log/fail2ban
+      - /home/${USER}/logs/vsftpd:/var/log/vsftpd
+      - /home/${USER}/logs/nginx:/var/log/nginx
+    privileged: true
 
 networks:
   inception:
     driver: bridge
 
-volumes:
-  db_data:
-    driver_opts:
-      o: bind
-      device: /home/${USER}/MyDatabase/MariaDB
-      type: none
-  wordpress_data:
-    driver_opts:
-      o: bind
-      device: /home/${USER}/MyDatabase/Wordpress
-      type: none
