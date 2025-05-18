@@ -41,7 +41,6 @@ services:
   mariadb:
     build: ./srcs/requirements/mariadb
     image: mariadb:new
-    container_name: MyMariaDB
     restart: always
     networks:
       - inception
@@ -100,4 +99,3 @@ services:
 networks:
   inception:
     driver: bridge
-
