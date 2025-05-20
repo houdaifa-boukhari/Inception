@@ -2,13 +2,14 @@
 
 echo "Starting MariaDB service..."
 
-set -e
+set -e # if any command fails, the script will exit immediately
+
 if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
     mysqld_safe &
     
-    until mysqladmin ping --silent; do
-        sleep 2
-    done
+until mysqladmin ping --silent; do
+    sleep 2
+done
 
     mysql -u root <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';

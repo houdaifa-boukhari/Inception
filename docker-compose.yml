@@ -91,7 +91,7 @@ services:
     container_name: MyFail2ban
     restart: always
     ports:
-      - "2222:22"
+      - "2022:22"
     networks:
       - inception
     volumes:
