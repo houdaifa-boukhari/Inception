@@ -13,8 +13,8 @@ services:
       - wordpress
     restart: always
     volumes:
-      - /home/${USER}/MyDatabase/Wordpress:/var/www/html
-      - /home/${USER}/logs/nginx:/var/log/nginx
+      - /home/${USER}/data/MyDatabase/Wordpress:/var/www/html
+      - /home/${USER}/data/logs/nginx:/var/log/nginx
 
   wordpress:
     build: ./srcs/requirements/wordpress
@@ -26,7 +26,7 @@ services:
     networks:
       - inception
     volumes:
-      - /home/${USER}/MyDatabase/Wordpress:/var/www/html
+      - /home/${USER}/data/MyDatabase/Wordpress:/var/www/html
     env_file:
       - .env
 
@@ -71,7 +71,7 @@ services:
     networks:
       - inception
     volumes:
-      - /home/${USER}/logs/vsftpd/vsftpd.log:/var/log/vsftpd.log
+      - /home/${USER}/data/logs/vsftpd/vsftpd.log:/var/log/vsftpd.log
     env_file:
       - .env
     
@@ -95,9 +95,9 @@ services:
     networks:
       - inception
     volumes:
-      - /home/${USER}/logs/fail2ban:/var/log/fail2ban
-      - /home/${USER}/logs/vsftpd:/var/log/vsftpd
-      - /home/${USER}/logs/nginx:/var/log/nginx
+      - /home/${USER}/data/logs/fail2ban:/var/log/fail2ban
+      - /home/${USER}/data/logs/vsftpd:/var/log/vsftpd
+      - /home/${USER}/data/logs/nginx:/var/log/nginx
     privileged: true
 
 networks:
@@ -108,5 +108,5 @@ volumes:
   db_data:
     driver_opts:
       o: bind
-      device: /home/${USER}/MyDatabase/MariaDB
+      device: /home/${USER}/data/MyDatabase/MariaDB
       type: none
