@@ -14,7 +14,7 @@ down:
 
 clean:
 	docker system prune -af
-	sudo rm -rf ~/MyDatabase
+	sudo rm -rf ~/MyDatabase ~/logs
 
 volumes_clean:
 	sudo rm -rf ~/MyDatabase ~/logs

@@ -41,11 +41,12 @@ services:
   mariadb:
     build: ./srcs/requirements/mariadb
     image: mariadb:new
+    container_name: MyMariaDB
     restart: always
     networks:
       - inception
     volumes:
-      - /home/${USER}/MyDatabase/MariaDB:/var/lib/mysql
+      - db_data:/var/lib/mysql
     env_file:
       - .env
   
@@ -71,6 +72,8 @@ services:
       - inception
     volumes:
       - /home/${USER}/logs/vsftpd/vsftpd.log:/var/log/vsftpd.log
+    env_file:
+      - .env
     
   static-site:
     build: ./srcs/requirements/bonus/StaticWebSite
@@ -87,9 +90,10 @@ services:
     image: fail2ban:new
     container_name: MyFail2ban
     restart: always
-    # ports:
-    #   - "2222:22"
-    network_mode: host
+    ports:
+      - "2222:22"
+    networks:
+      - inception
     volumes:
       - /home/${USER}/logs/fail2ban:/var/log/fail2ban
       - /home/${USER}/logs/vsftpd:/var/log/vsftpd
@@ -99,3 +103,10 @@ services:
 networks:
   inception:
     driver: bridge
+
+volumes:
+  db_data:
+    driver_opts:
+      o: bind
+      device: /home/${USER}/MyDatabase/MariaDB
+      type: none
