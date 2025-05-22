@@ -2,7 +2,7 @@
 
 echo "Starting MariaDB service..."
 
-set -e # if any command fails, the script will exit immediately
+set -e
 
 if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
     mysqld_safe &

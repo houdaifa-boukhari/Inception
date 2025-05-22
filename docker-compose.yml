@@ -13,8 +13,8 @@ services:
       - wordpress
     restart: always
     volumes:
-      - /home/${USER}/data/MyDatabase/Wordpress:/var/www/html
-      - /home/${USER}/data/logs/nginx:/var/log/nginx
+      - wordpress_data:/var/www/html
+      - nginx_logs:/var/log/nginx
 
   wordpress:
     build: ./srcs/requirements/wordpress
@@ -26,7 +26,7 @@ services:
     networks:
       - inception
     volumes:
-      - /home/${USER}/data/MyDatabase/Wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     env_file:
       - .env
 
@@ -70,8 +70,6 @@ services:
       - "30000-30009:30000-30009"
     networks:
       - inception
-    volumes:
-      - /home/${USER}/data/logs/vsftpd/vsftpd.log:/var/log/vsftpd.log
     env_file:
       - .env
     
@@ -95,10 +93,8 @@ services:
     networks:
       - inception
     volumes:
-      - /home/${USER}/data/logs/fail2ban:/var/log/fail2ban
-      - /home/${USER}/data/logs/vsftpd:/var/log/vsftpd
-      - /home/${USER}/data/logs/nginx:/var/log/nginx
-    privileged: true
+      - fail2ban_logs:/var/log/fail2ban
+      - nginx_logs:/var/log/nginx
 
 networks:
   inception:
@@ -107,6 +103,24 @@ networks:
 volumes:
   db_data:
     driver_opts:
+      type: none
       o: bind
       device: /home/${USER}/data/MyDatabase/MariaDB
+
+  wordpress_data:
+    driver_opts:
       type: none
+      o: bind
+      device: /home/${USER}/data/MyDatabase/Wordpress
+
+  nginx_logs:
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/logs/nginx
+
+  fail2ban_logs:
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/logs/fail2ban

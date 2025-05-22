@@ -13,7 +13,6 @@ COPY lighttpd.conf /etc/lighttpd/lighttpd.conf
 
 EXPOSE 8080
 
-# Start PHP-FPM and lighttpd together using a simple script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 

@@ -3,7 +3,7 @@ FROM debian:bookworm
 RUN apt-get update && apt-get install -y nginx openssl && \
     rm -rf /var/lib/apt/lists/*
 
-# Generate a self-signed SSL certificate
+# Generat SSL Certificate
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/nginx/nginx.key \
     -out /etc/nginx/nginx.crt \

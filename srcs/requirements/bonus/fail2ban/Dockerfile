@@ -8,7 +8,6 @@ RUN apt-get update && \
 
 COPY ./conf/jail.local /etc/fail2ban/jail.local
 COPY ./conf/filter.d/wordpress.conf /etc/fail2ban/filter.d/wordpress.conf
-COPY ./conf/filter.d/vsftpd.conf /etc/fail2ban/filter.d/vsftpd.conf
 COPY ./conf/action.d/actions.conf /etc/fail2ban/action.d/actions.conf
 
 EXPOSE 22

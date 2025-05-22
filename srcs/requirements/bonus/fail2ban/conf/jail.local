@@ -1,13 +1,3 @@
-[vsftpd]
-enabled = true
-port = ftp
-filter = vsftpd
-logpath = /var/log/vsftpd/vsftpd.log
-maxretry = 3
-findtime = 600
-bantime = 3600
-action = actions
-
 [wordpress]
 enabled = true
 filter = wordpress

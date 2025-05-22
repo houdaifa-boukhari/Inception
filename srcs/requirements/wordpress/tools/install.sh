@@ -2,7 +2,6 @@
 
 sleep 3
 
-# Exit early if WordPress is already installed
 if [ -f "/var/www/html/wp-config.php" ] && wp core is-installed --path="/var/www/html" --allow-root; then
   echo "WordPress already installed, skipping setup."
   exec php-fpm8.2 -F
@@ -10,16 +9,13 @@ fi
 
 echo "SH::Setting up WordPress....."
 if [ ! -f "/var/www/html/wp-config.php" ]; then
-  # Create directory for WordPress if it doesn't exist
-  mkdir -p /var/www/html
+   mkdir -p /var/www/html
 
-  # Download WordPress
-  echo "Bash::Downloading WordPress..."
-  wp core download --path="/var/www/html" --allow-root
+   echo "Bash::Downloading WordPress..."
+   wp core download --path="/var/www/html" --allow-root
 
    echo "Bash::Configing WordPress..."
-  # Create wp-config.php with database credentials
-  wp config create \
+   wp config create \
      --dbname="${MYSQL_DATABASE}" \
      --dbuser="${MYSQL_USER}" \
      --dbpass="${MYSQL_PASSWORD}" \
@@ -27,7 +23,6 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
      --path="/var/www/html" \
      --allow-root
 
-   # Install WordPress with the given admin credentials and site details
    echo "SH::Installing WordPress..."
    wp core install \
       --url="${WP_URL}" \
